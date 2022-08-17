@@ -269,22 +269,15 @@ func (r *routes) enforceLabel(h http.HandlerFunc) http.Handler {
 			matcherType = labels.MatchRegexp
 			lvalue = strings.TrimPrefix(lvalue, "~")
 		}
-		if lvalue == "" {
-			queryLabel = r.label + "!"
-			lvalue = req.FormValue(queryLabel)
+
+		if strings.HasPrefix(lvalue, "!") {
 			matcherType = labels.MatchNotEqual
-			if lvalue == "" {
-				queryLabel = r.label + "!~"
-				for k, v := range req.Form {
-					if strings.HasPrefix(k, queryLabel) {
-						if v[0] == "" {
-							lvalue = strings.TrimPrefix(k, queryLabel)
-							queryLabel = k
-							matcherType = labels.MatchNotRegexp
-						}
-					}
-				}
-			}
+			lvalue = strings.TrimPrefix(lvalue, "!")
+		}
+
+		if strings.HasPrefix(lvalue, "!~") {
+			matcherType = labels.MatchNotRegexp
+			lvalue = strings.TrimPrefix(lvalue, "!~")
 		}
 
 		matcher := &labels.Matcher{
