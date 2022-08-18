@@ -270,14 +270,14 @@ func (r *routes) enforceLabel(h http.HandlerFunc) http.Handler {
 			lvalue = strings.TrimPrefix(lvalue, "~")
 		}
 
-		if strings.HasPrefix(lvalue, "!") {
-			matcherType = labels.MatchNotEqual
-			lvalue = strings.TrimPrefix(lvalue, "!")
-		}
-
 		if strings.HasPrefix(lvalue, "!~") {
 			matcherType = labels.MatchNotRegexp
 			lvalue = strings.TrimPrefix(lvalue, "!~")
+		}
+
+		if strings.HasPrefix(lvalue, "!") {
+			matcherType = labels.MatchNotEqual
+			lvalue = strings.TrimPrefix(lvalue, "!")
 		}
 
 		matcher := &labels.Matcher{
