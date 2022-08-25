@@ -280,11 +280,8 @@ func (r *routes) enforceLabel(h http.HandlerFunc) http.Handler {
 			lvalue = strings.TrimPrefix(lvalue, "!")
 		}
 
-		matcher := &labels.Matcher{
-			Name:  r.label,
-			Type:  matcherType,
-			Value: strings.Trim(lvalue, "\""),
-		}
+		matcher, _ := labels.NewMatcher(matcherType, r.label, strings.Trim(lvalue, "\""))
+
 		req = req.WithContext(withLabelMatcher(req.Context(), matcher))
 
 		// Remove the proxy label from the query parameters.
