@@ -146,20 +146,6 @@ func (ms Enforcer) EnforceMatchers(targets []*labels.Matcher) ([]*labels.Matcher
 	}
 
 	for _, target := range targets {
-		if matcher, ok := labelMatchers[target.Name]; ok {
-			// matcher.String() returns something like "labelfoo=value"
-			if ms.errorOnReplace && matcher.String() != target.String() {
-				return res, newIllegalLabelMatcherError(matcher.String(), target.String())
-			}
-			if target.Type == labels.MatchEqual {
-				if labelMatchers[target.Name].Matches(target.Value) {
-					delete(labelMatchers, target.Name)
-					res = append(res, target)
-				}
-			}
-			continue
-		}
-
 		res = append(res, target)
 	}
 
