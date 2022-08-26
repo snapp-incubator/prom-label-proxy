@@ -258,7 +258,6 @@ func NewRoutes(upstream *url.URL, label string, opts ...Option) (*routes, error)
 
 func (r *routes) enforceLabel(h http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		queryLabel := r.label
 		lvalue, err := r.getLabelValue(req)
 		if err != nil {
 			prometheusAPIError(w, humanFriendlyErrorMessage(err), http.StatusBadRequest)
@@ -286,8 +285,8 @@ func (r *routes) enforceLabel(h http.HandlerFunc) http.Handler {
 
 		// Remove the proxy label from the query parameters.
 		q := req.URL.Query()
-		if q.Get(queryLabel) != "" {
-			q.Del(queryLabel)
+		if q.Get(r.label) != "" {
+			q.Del(r.label)
 		}
 		req.URL.RawQuery = q.Encode()
 		// Remove the proxy label from the PostForm.
